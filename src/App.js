@@ -131,9 +131,14 @@ const CandyBurstGame = () => {
           'url("https://www.genai.tv/content/images/2023/09/Candy-Crush-game.png")',
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundAttachment: "fixed",
         margin: 0,
         padding: 0,
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        overflow: "hidden",
       }}
     >
       <div style={{ padding: "10px", fontSize: "30px" }}>
