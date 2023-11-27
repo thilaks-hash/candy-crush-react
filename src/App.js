@@ -27,6 +27,13 @@ const CandyBurstGame = () => {
   const [gamesPlayed, setGamesPlayed] = useState(0);
   const [gamesWon, setGamesWon] = useState(0);
   const [gamesLost, setGamesLost] = useState(0);
+  const [scoreHistory, setScoreHistory] = useState([]);
+
+  useEffect(() => {
+    const storedScoreHistory =
+      JSON.parse(localStorage.getItem("scoreHistory")) || [];
+    setScoreHistory(storedScoreHistory);
+  }, []);
 
   useEffect(() => {
     if (movesLeft === 0 || score >= maxCandiesToBurst) {
@@ -46,6 +53,16 @@ const CandyBurstGame = () => {
     } else {
       setGamesLost((prevGamesLost) => prevGamesLost + 1);
     }
+    const gameResult = score >= maxCandiesToBurst ? "won" : "lost";
+    const newScoreEntry = { score, result: gameResult, date: new Date() };
+
+    setScoreHistory((prevScoreHistory) => [...prevScoreHistory, newScoreEntry]);
+    const storedScoreHistory =
+      JSON.parse(localStorage.getItem("scoreHistory")) || [];
+    const updatedScoreHistory = [...storedScoreHistory, newScoreEntry];
+    localStorage.setItem("scoreHistory", JSON.stringify(updatedScoreHistory));
+
+    setScoreHistory(updatedScoreHistory);
   };
 
   const handleCellClick = (row, col) => {
@@ -196,6 +213,7 @@ const CandyBurstGame = () => {
           ))
         )}
       </div>
+
       <div style={{ padding: "10px" }}>
         <button
           onClick={handleReset}
@@ -209,6 +227,24 @@ const CandyBurstGame = () => {
           Reset Game
         </button>
       </div>
+      {scoreHistory.length > 0 ? (
+        <div style={{ padding: "10px", backgroundColor: "white" }}>
+          <strong>Score History:</strong>
+
+          <ul>
+            {scoreHistory.map((entry, index) => (
+              <li key={index}>
+                {entry.result === "won" ? "Won" : "Lost"} - Score: {entry.score}{" "}
+                - Date: {entry.date.toLocaleString()}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <div style={{ backgroundColor: "white", padding: "20px" }}>
+          No score history
+        </div>
+      )}
     </div>
   );
 };
